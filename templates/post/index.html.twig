@@ -1,0 +1,13 @@
+<h1>Posts</h1>
+{% if posts|length > 0 %}
+    <ul>
+        {% for post in posts %}
+            <li>
+                <a href="{{ path('post-show', {slug: post.slug}) }}">{{ post.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <small>There are no posts to display.</small>
+{% endif %}
+<p>To add a new post, <a href="{{ path('post-add') }}">click here</a></p>
