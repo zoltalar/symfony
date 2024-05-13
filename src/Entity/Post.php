@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -26,11 +27,6 @@ class Post
     
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
-    
-    public function __toString(): string 
-    {
-        return $this->getTitle();
-    }
 
     public function getId(): ?int
     {
@@ -71,7 +67,7 @@ class Post
     public function computeSlug(SluggerInterface $slugger): static
     {
         if ( ! $this->slug) {
-            $this->slug = (string) $slugger->slug( (string) $this)->lower();
+            $this->slug = (string) $slugger->slug($this->getTitle())->lower();
         }
         
         return $this;
@@ -103,9 +99,12 @@ class Post
     
     public function deletePhoto(string $dir): static
     {
-        if (is_file($dir . DIRECTORY_SEPARATOR . $this->photo))
+        $photo = $this->photo;
+        
+        if ( ! empty($photo))
         {
-            @unlink($dir . DIRECTORY_SEPARATOR . $this->photo);
+            $filesystem = new Filesystem();
+            $filesystem->remove($dir . DIRECTORY_SEPARATOR . $photo);
         }
         
         return $this;
