@@ -37,7 +37,12 @@ class PostController extends AbstractController
     {
         $post = new Post();
         
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostType::class, $post, [
+            'attr' => [
+                'novalidate' => 'novalidate'
+            ]
+        ]);
+        
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {

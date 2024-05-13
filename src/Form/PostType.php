@@ -17,7 +17,6 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->setAttribute('novalidate', 'novalidate')
             ->add('title', TextType::class)
             ->add('content', TextareaType::class, [
                 'attr' => [
