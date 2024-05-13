@@ -1,3 +1,12 @@
-<h1>{{ post.title }}</h1>
-<p>{{ post.content }}</p>
-<p><a href="{{ path('post-index') }}">Back</a></p>
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+    {% if (post.photo) %}
+        <div class="mb-3">
+            <img src="{{ asset('upload/' ~ post.photo) }}" class="img-fluid rounded" />
+        </div>
+    {% endif %}
+    <p><a href="{{ path('post-index') }}">Back</a></p>
+{% endblock %}

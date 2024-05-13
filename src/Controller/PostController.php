@@ -6,6 +6,8 @@ use App\Entity\Post;
 use App\Form\PostType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -31,7 +33,7 @@ class PostController extends AbstractController
     }
     
     #[Route('/post/add', name: 'post-add')]
-    public function add(Request $request): Response
+    public function add(Request $request, #[Autowire('%photo_dir%')] string $photoDir): Response
     {
         $post = new Post();
         
@@ -39,6 +41,17 @@ class PostController extends AbstractController
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            if ($photo = $form['photo']->getData()) {
+                $file = implode('.', [
+                    bin2hex(random_bytes(8)),
+                    $photo->guessExtension()
+                ]);
+                
+                $photo->move($photoDir, $file);
+                $post->setPhoto($file);
+            }
+            
             $this->entityManager->persist($post);
             $this->entityManager->flush();
             
@@ -52,5 +65,11 @@ class PostController extends AbstractController
     public function show(Post $post): Response
     {
         return $this->render('post/show.html.twig', ['post' => $post]);
+    }
+    
+    #[Route('/post/delete-batch', name: 'post-delete-batch')]
+    public function deleteBatch()
+    {
+        dd($this->getRequest());
     }
 }

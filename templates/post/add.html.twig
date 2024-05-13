@@ -1,2 +1,11 @@
-{{ form(form) }}
-<a href="{{ path('post-index') }}">Back</a>
+{% extends "base.html.twig" %}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-4">
+            {{ form(form) }}
+            <a href="{{ path('post-index') }}">Back</a>
+        </div>
+    </div>
+{% endblock %}

@@ -24,6 +24,9 @@ class Post
     #[ORM\Column(type: 'text')]
     private ?string $content = null;
     
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+    
     public function __toString(): string 
     {
         return $this->getTitle();
@@ -82,6 +85,18 @@ class Post
     public function setContent(string $content): static
     {
         $this->content = $content;
+        
+        return $this;
+    }
+    
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+    
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
         
         return $this;
     }
