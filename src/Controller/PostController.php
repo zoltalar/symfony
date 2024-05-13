@@ -67,9 +67,12 @@ class PostController extends AbstractController
         return $this->render('post/show.html.twig', ['post' => $post]);
     }
     
-    #[Route('/post/delete-batch', name: 'post-delete-batch')]
-    public function deleteBatch()
+    #[Route('/post/delete/{id}', name: 'post-delete')]
+    public function delete(Post $post): RedirectResponse
     {
-        dd($this->getRequest());
+        $this->entityManager->remove($post);
+        $this->entityManager->flush();
+        
+        return $this->redirectToRoute('post-index');
     }
 }

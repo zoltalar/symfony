@@ -27,3 +27,4 @@ services:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'prePersist', entity: 'App\Entity\Post'}
             - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'App\Entity\Post'}
+            - { name: 'doctrine.orm.entity_listener', event: 'preRemove', entity: 'App\Entity\Post'}

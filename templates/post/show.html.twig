@@ -8,5 +8,8 @@
             <img src="{{ asset('upload/' ~ post.photo) }}" class="img-fluid rounded" />
         </div>
     {% endif %}
-    <p><a href="{{ path('post-index') }}">Back</a></p>
+    <p>
+        <a href="{{ path('post-index') }}">Back</a>
+        <a href="{{ path('post-delete', {id: post.id}) }}" class="ms-2 text-danger">Delete</a>
+    </p>
 {% endblock %}

@@ -100,4 +100,14 @@ class Post
         
         return $this;
     }
+    
+    public function deletePhoto(string $dir): static
+    {
+        if (is_file($dir . DIRECTORY_SEPARATOR . $this->photo))
+        {
+            @unlink($dir . DIRECTORY_SEPARATOR . $this->photo);
+        }
+        
+        return $this;
+    }
 }

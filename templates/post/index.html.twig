@@ -3,36 +3,18 @@
 {% block body %}
     <h3>Posts</h3>
     {% if posts|length > 0 %}
-        <script>
-            function deleteChecked() {
-                var form = document.getElementById('form-posts');
-                if (confirm('Are you sure you want to delete selected posts')) {
-                    form.submit();
-                }
-            }
-        </script>
-        <form id="form-posts" action="{{ path('post-delete-batch') }}" method="post">
-            {% for post in posts %}
-                <div class="d-flex align-items-center mb-3">
-                    <div class="flex-grow-0 me-3">
-                        <div class="form-check">
-                            <input type="checkbox" name="posts[]" class="form-check-input" value="{{ post.id }}">
-                        </div>
+        {% for post in posts %}
+            <div class="d-flex align-items-center mb-3">
+                {% if post.photo %}
+                    <div class="flex-shrink-0 me-3">
+                        <img src="{{ asset('upload/' ~ post.photo) }}" class="rounded" width="100" />
                     </div>
-                    {% if post.photo %}
-                        <div class="flex-shrink-0 me-3">
-                            <img src="{{ asset('upload/' ~ post.photo) }}" class="rounded" width="100" />
-                        </div>
-                    {% endif %}
-                    <div class="flex-grow-1">
-                        <a href="{{ path('post-show', {slug: post.slug}) }}">{{ post.title }}</a>
-                    </div>
+                {% endif %}
+                <div class="flex-grow-1">
+                    <a href="{{ path('post-show', {slug: post.slug}) }}">{{ post.title }}</a>
                 </div>
-            {% endfor %}
-            <p>
-                <a href="#/delete-batch" class="btn btn-sm btn-outline-danger" onClick="deleteChecked()">Delete Checked</a>
-            </p>
-        </form>        
+            </div>
+        {% endfor %}      
     {% else %}
         <p>
             <small class="text-muted">There are no posts to display.</small>
