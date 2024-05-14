@@ -38,5 +38,11 @@ class PostEntityListener
     public function preRemove(Post $post, LifecycleEventArgs $event)
     {
         $post->deletePhoto($this->photoDir);
+        $objectManager = $event->getObjectManager();
+        
+        foreach ($post->getComments() as $comment) {
+            $objectManager->remove($comment);
+            $objectManager->flush();
+        }
     }
 }

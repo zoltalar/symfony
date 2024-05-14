@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
+use App\Form\CommentType;
 use App\Form\PostType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,9 +69,44 @@ class PostController extends AbstractController
     }
     
     #[Route('/post/{slug}', name: 'post-show')]
-    public function show(Post $post): Response
+    public function show(Request $request, string $slug): Response
     {
-        return $this->render('post/show.html.twig', ['post' => $post]);
+        $post = $this
+            ->entityManager
+            ->getRepository(Post::class)
+            ->findOneBy(['slug' => $slug]);
+        
+        if ( ! $post) {
+            return $this->redirectToRoute('post-index');
+        }
+        
+        $comment = new Comment();
+        
+        $form = $this->createForm(CommentType::class, $comment, [
+            'attr' => [
+                'novalidate' => 'novalidate'
+            ]
+        ]);
+        
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $comment->setPost($post);
+            
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+            
+            return $this->redirectToRoute('post-show', [
+                'slug' => $post->getSlug()
+            ]);
+        }
+        
+        return $this->render('post/show.html.twig', [
+            'post' => $post,
+            'comments' => $post->getComments(),
+            'form' => $form
+        ]);
     }
     
     #[Route('/post/delete/{id}', name: 'post-delete')]
