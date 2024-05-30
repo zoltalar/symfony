@@ -17,6 +17,12 @@
                 <p class="mb-0">{{ comment.comment }}</p>
             </div>
         {% endfor %}
+        {% if previous >= 0 %}
+            <a href="{{ path('post-show', { slug: post.slug, offset: previous }) }}" class="me-2">Previous Page</a>
+        {% endif %}
+        {% if next < comments|length %}
+            <a href="{{ path('post-show', { slug: post.slug, offset: next }) }}">Next Page</a>
+        {% endif %}
     {% endif %}
     <h6 class="mb-4 mt-4">Add Comment</h6>
     <div class="row">

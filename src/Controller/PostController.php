@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Form\CommentType;
 use App\Form\PostType;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -80,6 +81,13 @@ class PostController extends AbstractController
             return $this->redirectToRoute('post-index');
         }
         
+        $offset = max(0, $request->query->getInt('offset', 0));
+        
+        $paginator = $this
+            ->entityManager
+            ->getRepository(Comment::class)
+            ->getPaginator($post, $offset);
+        
         $comment = new Comment();
         
         $form = $this->createForm(CommentType::class, $comment, [
@@ -102,9 +110,14 @@ class PostController extends AbstractController
             ]);
         }
         
+        $previous = $offset - CommentRepository::PAGINATOR_PER_PAGE;
+        $next = min(count($paginator), $offset + CommentRepository::PAGINATOR_PER_PAGE);
+        
         return $this->render('post/show.html.twig', [
             'post' => $post,
-            'comments' => $post->getComments(),
+            'comments' => $paginator,
+            'previous' => $previous,
+            'next' => $next,
             'form' => $form
         ]);
     }
